@@ -16,6 +16,11 @@ app.use(cors({
 
 app.use(express.json());
 
+// Make a request to the health endpoint for render.com 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' });
+});
+
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
