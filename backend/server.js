@@ -21,6 +21,18 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'healthy' });
 });
 
+// Root Route , this is to display if look directly at backend on render.com
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Les Arcs Trip Planner API',
+        endpoints: {
+            health: '/health',
+            participants: '/participants',
+            comments: '/comments'
+        }
+    });
+});
+
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
