@@ -16,6 +16,8 @@ app.use(cors({
 
 app.use(express.json());
 
+
+
 // Make a request to the health endpoint for render.com 
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'healthy' });
@@ -31,6 +33,15 @@ app.get('/', (req, res) => {
             comments: '/comments'
         }
     });
+});
+
+
+//FIXME remove after testing is done
+// Add this before your routes to log the IP
+app.use((req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    console.log('Incoming request from IP:', ip);
+    next();
 });
 
 mongoose.connect(process.env.MONGODB_URI)
