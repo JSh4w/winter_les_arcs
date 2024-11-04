@@ -5,11 +5,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-dotenv.config({path: '../.env'});
+dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: '*',
+    origin: ['localhost:3000', 'https://winter-les-arcs.netlify.app/'],
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }));
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 
-//FIXME remove after testing is done
+// FIXME remove after testing is done
 // Add this before your routes to log the IP
 app.use((req, res, next) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;

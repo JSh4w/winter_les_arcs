@@ -3,7 +3,20 @@ import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import './App.css';
 
+
 function App() {
+  // Get API URL from environment variables
+  const API_URL = import.meta.env.VITE_API_URL;
+  
+  // axios instance with base URL and default config
+  const api = axios.create({
+    baseURL: API_URL,
+    timeout: 15000, // 15 seconds
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+
   const [participants, setParticipants] = useState([]);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,28 +24,24 @@ function App() {
   const [newParticipant, setNewParticipant] = useState({ name: '' });
   const [newComment, setNewComment] = useState('');
 
-  const API_URL = 'http://localhost:3000';
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  // Enhanced error handling in fetchData
   const fetchData = async () => {
     setError(null);
     try {
       const [participantsRes, commentsRes] = await Promise.all([
-        axios.get(`${API_URL}/participants`),
-        axios.get(`${API_URL}/comments`)
+        api.get('/participants'),
+        api.get('/comments')
       ]);
       setParticipants(participantsRes.data);
       setComments(commentsRes.data);
     } catch (err) {
-      setError('Error connecting to server. Please try again later.');
+      console.error('Fetch error:', err);
+      const errorMessage = err.response?.data?.error || err.message;
+      setError(`Error connecting to server: ${errorMessage}. Please try again later.`);
     } finally {
       setLoading(false);
     }
   };
-
   const addParticipant = async (e) => {
     e.preventDefault();
     if (!newParticipant.name.trim()) return;
