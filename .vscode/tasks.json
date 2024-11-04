@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Frontend",
+            "type": "shell",
+            "command": "fnm env --use-on-cd | Out-String | Invoke-Expression; cd frontend; npm run dev",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe"
+                }
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "group": "servers"
+            }
+        },
+        {
+            "label": "Start Backend",
+            "type": "shell",
+            "command": "fnm env --use-on-cd | Out-String | Invoke-Expression; cd backend; node server.js",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe"
+                }
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "group": "servers"
+            }
+        },
+        {
+            "label": "Start Both",
+            "dependsOn": ["Start Frontend", "Start Backend"],
+            "problemMatcher": [],
+            "presentation": {
+                "group": "servers"
+            }
+        }
+    ]
+}

@@ -1,29 +1,24 @@
-// frontend/src/App.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Trash2 } from 'lucide-react';
+import './App.css';
 
-const API_URL = 'http://localhost:3000'; // Development
-// const API_URL = 'https://your-render-url'; // Production
-
-  /**
-   * App component that fetches data from the backend API every 30 seconds
-   * and renders the trip details, participants and comments.
-   * @returns {JSX.Element} The App component.
-   */
 function App() {
   const [participants, setParticipants] = useState([]);
   const [comments, setComments] = useState([]);
-  const [newParticipant, setNewParticipant] = useState({ name: '', skillLevel: 'beginner' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [newParticipant, setNewParticipant] = useState({ name: '' });
   const [newComment, setNewComment] = useState('');
 
-  // Fetch data every 30 seconds
+  const API_URL = 'http://localhost:3000';
+
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   const fetchData = async () => {
+    setError(null);
     try {
       const [participantsRes, commentsRes] = await Promise.all([
         axios.get(`${API_URL}/participants`),
@@ -31,95 +26,180 @@ function App() {
       ]);
       setParticipants(participantsRes.data);
       setComments(commentsRes.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch (err) {
+      setError('Error connecting to server. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Core functions for participants and comments
   const addParticipant = async (e) => {
     e.preventDefault();
+    if (!newParticipant.name.trim()) return;
+
     try {
       await axios.post(`${API_URL}/participants`, newParticipant);
-      setNewParticipant({ name: '', skillLevel: 'beginner' });
+      setNewParticipant({ name: '' });
       fetchData();
     } catch (error) {
-      console.error('Error adding participant:', error);
+      setError('Failed to add participant. Please try again.');
+    }
+  };
+
+  const deleteParticipant = async (id, name) => {
+    // Add confirmation dialog
+    const isConfirmed = window.confirm(`Are you sure you want to remove ${name} from the trip?`);
+    
+    if (isConfirmed) {
+      try {
+        await axios.delete(`${API_URL}/participants/${id}`);
+        fetchData();
+      } catch (error) {
+        setError('Failed to remove participant. Please try again.');
+      }
     }
   };
 
   const addComment = async (e) => {
     e.preventDefault();
+    if (!newComment.trim()) return;
+
     try {
-      await axios.post(`${API_URL}/comments`, { content: newComment });
+      await axios.post(`${API_URL}/comments`, { content: newComment.trim() });
       setNewComment('');
       fetchData();
     } catch (error) {
-      console.error('Error adding comment:', error);
+      setError('Failed to add comment. Please try again.');
     }
   };
 
+  const deleteComment = async (id, content) => {
+    // Add confirmation dialog with preview of comment content
+    const previewContent = content.length > 50 ? content.substring(0, 50) + '...' : content;
+    const isConfirmed = window.confirm(`Are you sure you want to delete this comment?\n\n"${previewContent}"`);
+    
+    if (isConfirmed) {
+      try {
+        await axios.delete(`${API_URL}/comments/${id}`);
+        fetchData();
+      } catch (error) {
+        setError('Failed to delete comment. Please try again.');
+      }
+    }
+  };
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      {/* Trip Details Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Les Arcs Ski Trip 2025</h1>
-        {/* Add your static trip details here */}
-      </div>
-
-      {/* Participants Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Participants ({participants.length}/16)</h2>
-        <form onSubmit={addParticipant} className="mb-4">
-          <input
-            type="text"
-            value={newParticipant.name}
-            onChange={(e) => setNewParticipant({ ...newParticipant, name: e.target.value })}
-            placeholder="Name"
-            className="border p-2 mr-2"
-          />
-          <select
-            value={newParticipant.skillLevel}
-            onChange={(e) => setNewParticipant({ ...newParticipant, skillLevel: e.target.value })}
-            className="border p-2 mr-2"
-          >
-            <option value="beginner">Beginner</option>
-            <option value="expert">Expert</option>
-          </select>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add
-          </button>
-        </form>
-        <div>
-          {participants.map((participant) => (
-            <div key={participant._id} className="border p-2 mb-2">
-              {participant.name} - {participant.skillLevel}
-            </div>
-          ))}
+    <div className="container">
+      <div className="content-wrapper">
+        <div className="header">
+          <h1>Les Arcs 2025 Trip Planner</h1>
+          <p>Plan and coordinate our upcoming ski trip</p>
         </div>
-      </div>
 
-      {/* Comments Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Comments</h2>
-        <form onSubmit={addComment} className="mb-4">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Add a comment..."
-            className="border p-2 w-full mb-2"
-          />
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-            Post Comment
-          </button>
-        </form>
-        <div>
-          {comments.map((comment) => (
-            <div key={comment._id} className="border p-2 mb-2">
-              <p>{comment.content}</p>
-              <small>{new Date(comment.createdAt).toLocaleString()}</small>
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError(null)}>×</button>
+          </div>
+        )}
+
+        <div className="card">
+          <h2>Trip Details</h2>
+          <div className="trip-details">
+            <ul>
+              <li>📅 <strong>When:</strong> February/March 2025</li>
+              <li>🏔️ <strong>Where:</strong> Les Arcs 1800</li>
+              <li>👥 <strong>Group Size:</strong> 12-16 people</li>
+              <li>💰 <strong>Budget:</strong> Max £1000 per person</li>
+            </ul>
+            <p>Join us for an amazing ski trip in the French Alps!</p>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Participants ({participants.length}/16)</h2>
+          
+          <form onSubmit={addParticipant} className="participant-form">
+            <div className="form-group">
+              <input
+                type="text"
+                value={newParticipant.name}
+                onChange={(e) => setNewParticipant({ name: e.target.value })}
+                placeholder="Participant name"
+                className="input-field"
+                required
+              />
+              <button type="submit" className="button">Add</button>
             </div>
-          ))}
+          </form>
+
+          <div className="participant-list">
+            {participants.map((participant) => (
+              <div key={participant._id} className="participant-item">
+                <span className="participant-name">{participant.name}</span>
+                <button
+                  onClick={() => deleteParticipant(participant._id, participant.name)}
+                  className="delete-button"
+                  title="Remove participant"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+
+            {participants.length === 0 && (
+              <p className="empty-message">
+                No participants yet. Be the first to join!
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Comments</h2>
+          
+          <form onSubmit={addComment} className="comment-form">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+              rows="3"
+              required
+            />
+            <div className="form-group">
+              <button type="submit" className="button">Post Comment</button>
+            </div>
+          </form>
+
+          <div className="comments-list">
+            {comments.map((comment) => (
+              <div key={comment._id} className="comment-item">
+                <div className="comment-content">
+                  <p className="comment-text">{comment.content}</p>
+                  <button
+                    onClick={() => deleteComment(comment._id, comment.content)}
+                    className="delete-button"
+                    title="Delete comment"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div className="comment-timestamp">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </div>
+              </div>
+            ))}
+
+            {comments.length === 0 && (
+              <p className="empty-message">
+                No comments yet. Start the conversation!
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

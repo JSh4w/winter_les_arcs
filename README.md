@@ -8,3 +8,6 @@ I doubt the users would ever exten past friends but if it turns out to be useful
 - Node Backend
 - MongoDB Database
 
+## Tips
+To run fnm environment for node and npm use this following command: 
+fnm env --use-on-cd | Out-String | Invoke-Expression
