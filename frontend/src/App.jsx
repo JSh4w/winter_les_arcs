@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import './App.css';
 
-
 function App() {
   // Get API URL from environment variables
   const API_URL = import.meta.env.VITE_API_URL;
@@ -24,6 +23,11 @@ function App() {
   const [newParticipant, setNewParticipant] = useState({ name: '' });
   const [newComment, setNewComment] = useState('');
 
+  // Add useEffect to fetch data when component mounts
+  useEffect(() => {
+    fetchData();
+  }, []); // Empty dependency array means this runs once on mount
+
   // Enhanced error handling in fetchData
   const fetchData = async () => {
     setError(null);
@@ -42,12 +46,13 @@ function App() {
       setLoading(false);
     }
   };
+
   const addParticipant = async (e) => {
     e.preventDefault();
     if (!newParticipant.name.trim()) return;
 
     try {
-      await api.post(`/participants`, newParticipant);
+      await api.post('/participants', newParticipant); // Use api instance instead of axios
       setNewParticipant({ name: '' });
       fetchData();
     } catch (error) {
@@ -56,12 +61,11 @@ function App() {
   };
 
   const deleteParticipant = async (id, name) => {
-    // Add confirmation dialog
     const isConfirmed = window.confirm(`Are you sure you want to remove ${name} from the trip?`);
     
     if (isConfirmed) {
       try {
-        await api.delete(`/participants/${id}`);
+        await api.delete(`/participants/${id}`); // Use api instance instead of axios
         fetchData();
       } catch (error) {
         setError('Failed to remove participant. Please try again.');
@@ -74,7 +78,7 @@ function App() {
     if (!newComment.trim()) return;
 
     try {
-      await api.post(`/comments`, { content: newComment.trim() });
+      await api.post('/comments', { content: newComment.trim() }); // Use api instance instead of axios
       setNewComment('');
       fetchData();
     } catch (error) {
@@ -83,13 +87,12 @@ function App() {
   };
 
   const deleteComment = async (id, content) => {
-    // Add confirmation dialog with preview of comment content
     const previewContent = content.length > 50 ? content.substring(0, 50) + '...' : content;
     const isConfirmed = window.confirm(`Are you sure you want to delete this comment?\n\n"${previewContent}"`);
     
     if (isConfirmed) {
       try {
-        await api.delete(`/comments/${id}`);
+        await api.delete(`/comments/${id}`); // Use api instance instead of axios
         fetchData();
       } catch (error) {
         setError('Failed to delete comment. Please try again.');
