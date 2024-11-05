@@ -9,7 +9,7 @@ dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: ['localhost:3000', 'https://winter-les-arcs.netlify.app/'],
+    origin: ['http://localhost:3000', 'https://winter-les-arcs.netlify.app'],  
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }));

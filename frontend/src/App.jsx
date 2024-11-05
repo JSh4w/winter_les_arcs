@@ -47,7 +47,7 @@ function App() {
     if (!newParticipant.name.trim()) return;
 
     try {
-      await axios.post(`${API_URL}/participants`, newParticipant);
+      await api.post(`/participants`, newParticipant);
       setNewParticipant({ name: '' });
       fetchData();
     } catch (error) {
@@ -61,7 +61,7 @@ function App() {
     
     if (isConfirmed) {
       try {
-        await axios.delete(`${API_URL}/participants/${id}`);
+        await api.delete(`/participants/${id}`);
         fetchData();
       } catch (error) {
         setError('Failed to remove participant. Please try again.');
@@ -74,7 +74,7 @@ function App() {
     if (!newComment.trim()) return;
 
     try {
-      await axios.post(`${API_URL}/comments`, { content: newComment.trim() });
+      await api.post(`/comments`, { content: newComment.trim() });
       setNewComment('');
       fetchData();
     } catch (error) {
@@ -89,7 +89,7 @@ function App() {
     
     if (isConfirmed) {
       try {
-        await axios.delete(`${API_URL}/comments/${id}`);
+        await api.delete(`/comments/${id}`);
         fetchData();
       } catch (error) {
         setError('Failed to delete comment. Please try again.');
