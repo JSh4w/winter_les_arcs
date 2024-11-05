@@ -9,10 +9,22 @@ dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://winter-les-arcs.netlify.app'],  
-    methods: ['GET', 'POST', 'DELETE'],
+    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app'],
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
+
+// Debug middleware to log requests
+app.use((req, res, next) => {
+    console.log('\n--- Incoming Request ---');
+    console.log('Time:', new Date().toISOString());
+    console.log('Method:', req.method);
+    console.log('Path:', req.path);
+    console.log('Origin:', req.headers.origin);
+    console.log('---------------------\n');
+    next();
+});
 
 app.use(express.json());
 
@@ -122,7 +134,13 @@ app.delete('/comments/:id', async (req, res) => {
     }
 });
 
+//const PORT = process.env.PORT || 3000;
+//app.listen(PORT, () => {
+//    console.log(`Server running on port ${PORT}`);
+//});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log('Allowed origins:', ['http://localhost:5173', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app']);
 });

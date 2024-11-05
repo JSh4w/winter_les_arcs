@@ -24,6 +24,27 @@ function App() {
   const [newParticipant, setNewParticipant] = useState({ name: '' });
   const [newComment, setNewComment] = useState('');
 
+    // Separate health check
+    useEffect(() => {
+      const testConnection = async () => {
+        try {
+          console.log('Testing backend connection...');
+          const response = await axios.get(`${API_URL}/health`);
+          console.log('Backend health check:', response.data);
+          if (response.data.status === 'healthy') {
+            // If health check passes, fetch the data
+            fetchData();
+          }
+        } catch (err) {
+          console.error('Backend connection test failed:', err);
+          setError(`Backend connection failed: ${err.message}`);
+          setLoading(false);
+        }
+      };
+  
+      testConnection();
+    }, []);
+
   // Enhanced error handling in fetchData
   const fetchData = async () => {
     setError(null);
