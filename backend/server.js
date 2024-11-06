@@ -62,6 +62,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const Participant = mongoose.model('Participant', {
     name: String,
+    email: String,
+    skiingAbility: {
+        type: String,
+        enum: ['beginner', 'intermediate', 'advanced', 'expert'],
+        default: 'beginner'
+    },
     createdAt: { type: Date, default: Date.now }
 });
 
