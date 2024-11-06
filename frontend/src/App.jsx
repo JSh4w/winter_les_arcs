@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import './App.css';
-
+import ParticipantForm from './ParticipantForm';
 function App() {
   // Get API URL from environment variables
   const API_URL = import.meta.env.VITE_API_URL;
@@ -10,7 +10,7 @@ function App() {
   // axios instance with base URL and default config
   const api = axios.create({
     baseURL: API_URL,
-    timeout: 15000, // 15 seconds
+    timeout: 50000, // 50 seconds
     headers: {
       'Content-Type': 'application/json',
     }
@@ -47,13 +47,9 @@ function App() {
     }
   };
 
-  const addParticipant = async (e) => {
-    e.preventDefault();
-    if (!newParticipant.name.trim()) return;
-
+  const addParticipant = async (participantData) => {
     try {
-      await api.post('/participants', newParticipant); // Use api instance instead of axios
-      setNewParticipant({ name: '' });
+      await api.post('/participants', participantData);
       fetchData();
     } catch (error) {
       setError('Failed to add participant. Please try again.');
@@ -101,7 +97,7 @@ function App() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return <div className="loading">Loading... this may take up to 50 seconds to spin up the server, I'm sorry</div>;
   }
 
   return (
@@ -109,7 +105,7 @@ function App() {
       <div className="content-wrapper">
         <div className="header">
           <h1>Les Arcs 2025 Trip Planner</h1>
-          <p>Plan and coordinate our upcoming ski trip</p>
+          <p>Plan and coordinate an upcoming ski trip</p>
         </div>
 
         {error && (
@@ -127,6 +123,7 @@ function App() {
               <li>🏔️ <strong>Where:</strong> Les Arcs 1800</li>
               <li>👥 <strong>Group Size:</strong> 12-16 people</li>
               <li>💰 <strong>Budget:</strong> Max £1000 per person</li>
+              <li>💻 <strong>Github repo:</strong> https://github.com/JSh4w/winter_les_arcs</li>
             </ul>
             <p>Join us for an amazing ski trip in the French Alps!</p>
           </div>
@@ -135,24 +132,16 @@ function App() {
         <div className="card">
           <h2>Participants ({participants.length}/16)</h2>
           
-          <form onSubmit={addParticipant} className="participant-form">
-            <div className="form-group">
-              <input
-                type="text"
-                value={newParticipant.name}
-                onChange={(e) => setNewParticipant({ name: e.target.value })}
-                placeholder="Participant name"
-                className="input-field"
-                required
-              />
-              <button type="submit" className="button">Add</button>
-            </div>
-          </form>
+          <ParticipantForm onSubmit={addParticipant} />
 
           <div className="participant-list">
             {participants.map((participant) => (
               <div key={participant._id} className="participant-item">
                 <span className="participant-name">{participant.name}</span>
+                <span className="participant-email">{participant.email}</span>
+                <span className={`participant-ability ${participant.skiingAbility}`}>
+                  {participant.skiingAbility}
+                </span>
                 <button
                   onClick={() => deleteParticipant(participant._id, participant.name)}
                   className="delete-button"
