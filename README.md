@@ -8,8 +8,13 @@ I doubt the users would ever extend past friends but if it turns out to be usefu
 - Node Backend
 - MongoDB Database
 
-## Tips
+## Running on your own machine
+### Windows
 To run `fnm` environment for node and `npm` use this following command:
 ```bash
 fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
+### Linux
+TODO
+### MacOS
+TODO
