@@ -9,7 +9,7 @@ const App = () => {
   
   const api = axios.create({
     baseURL: API_URL,
-    timeout: 15000,
+    timeout: 2000, //2 seconds
     headers: {
       'Content-Type': 'application/json',
     }
@@ -48,7 +48,7 @@ const App = () => {
       console.error('Server error:', err);
       setServerStatus('disconnected');
       const errorMessage = err.response?.data?.error || err.message;
-      setError(`Error connecting to server: ${errorMessage}. Please try again later.`);
+      setError(`Error connecting to server: ${errorMessage}. It may take up to 50 seconds for the server to start.`);
       setLoading(false);
     }
   };
