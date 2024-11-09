@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 import { Trash2, ServerOff, Server, Loader2 } from 'lucide-react';
 import './App.css';
 import ParticipantForm from './ParticipantForm';
@@ -21,9 +22,14 @@ const App = () => {
   const [serverStatus, setServerStatus] = useState('connecting');
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState('');
+  const [itinerary, setItinerary] = useState('');
 
   useEffect(() => {
     checkServerAndFetchData();
+    fetch('/itinerary.md')
+      .then(response => response.text())
+      .then(text => setItinerary(text))
+      .catch(error => console.error('Error loading itinerary:', error));
   }, []);
 
   const checkServerAndFetchData = async () => {
@@ -162,16 +168,8 @@ const App = () => {
         )}
 
         <div className="card">
-          <h2>Trip Details</h2>
           <div className="trip-details">
-            <ul>
-              <li>📅 <strong>When:</strong> February/March 2025</li>
-              <li>🏔️ <strong>Where:</strong> Les Arcs 1800</li>
-              <li>👥 <strong>Group Size:</strong> 12-16 people</li>
-              <li>💰 <strong>Budget:</strong> Max £1000 per person</li>
-              <li>💻 <strong>Github repo:</strong> https://github.com/JSh4w/winter_les_arcs</li>
-            </ul>
-            <p>Join us for an amazing ski trip in the French Alps!</p>
+            <ReactMarkdown>{itinerary}</ReactMarkdown>
           </div>
         </div>
 

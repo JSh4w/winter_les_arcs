@@ -1,0 +1,58 @@
+.trip-details {
+    padding: 1rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    color: inherit;
+    font-family: sans-serif;
+  }
+
+  .trip-details h1,
+  .trip-details h2,
+  .trip-details h3,
+  .trip-details p,
+  .trip-details ul,
+  .trip-details ol,
+  .trip-details li,
+  .trip-details a {
+    color: inherit;
+    text-decoration: none;
+    font-family: sans-serif;
+  }
+  
+  .trip-details h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .trip-details h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 1.5rem 0 1rem;
+  }
+  
+  .trip-details h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+  }
+  
+  .trip-details ul,
+  .trip-details ol {
+    list-style-position: inside;
+    padding-left: 0;
+    margin: 1rem auto;
+  }
+  
+  .trip-details li {
+    text-align: center;
+    margin: 0.5rem 0;
+    line-height: 1.5;
+  }
+  
+  .trip-details p {
+    text-align: center;
+    margin: 1rem 0;
+    line-height: 1.5;
+  }
