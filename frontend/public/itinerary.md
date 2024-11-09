@@ -1,15 +1,19 @@
 # Information
 - 📅 **When:** February/March 2025
-- 🏔️ **Where:** Les Arcs 1800
+- 🏔️ **Where:** Les Arcs 1800 / Somewhere Equivalent 
 - 👥 **Group Size:** 12-16 people
-- 💰 **Budget:** Max £1000 per person
-- 💻 **Github repo:** https://github.com/JSh4w/winter_les_arcs
+- 💰 **Budget:** £1000 - £1500 per person
+- 💻 **Github repo:** [JSh4w/winter_les_arcs](https://github.com/JSh4w/winter_les_arcs)
+- 🎿**Example chalet** :  [Chalet Sandjeman](https://www.alpineanswers.co.uk/ski-chalets/france/morzine/chalet-sandjeman)
 
-## Schedule
-- Day 1: Arrival and Check-in, Day 2-4: Skiing/Snowboarding, Day 5: Departure
+## Options
+- Travel dates : 15-23rd Feb or sometime 28 March - 22 April, earlier the better
+- Chalet vs Residence 
 
-## What we need to plan
-- Accommodation , Lift Pass , Equipment Rental , Transport from Airport
-
-## What we need to bring
-- Ski Gear (if you have your own), Travel Insurance, European Health Insurance Card 
+## Example Trip: 
+- [Chalet Sandjeman](https://www.alpineanswers.co.uk/ski-chalets/france/morzine/chalet-sandjeman) £375 pp (ideally £300)
+- Ski Passes £300 - £350 pp  
+- Equipment Rental £100 -150 pp
+- Transport £300 pp
+- Medical insurance £20 pp 
+- Total ~ £1050 pp + Food 

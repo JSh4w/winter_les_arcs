@@ -191,7 +191,7 @@ const App = () => {
                     <span className="participant-availability">{participant.availability}</span>
                     <button
                       onClick={() => deleteParticipant(participant._id, participant.name)}
-                      className="delete-button"
+                      className="delete-button 🎿"
                       title="Remove participant"
                     >
                       <Trash2 size={16} />
