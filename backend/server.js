@@ -1,4 +1,3 @@
-
 // backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
@@ -68,6 +67,7 @@ const Participant = mongoose.model('Participant', {
         enum: ['beginner', 'intermediate', 'advanced', 'expert'],
         default: 'beginner'
     },
+    availability: String,
     createdAt: { type: Date, default: Date.now }
 });
 

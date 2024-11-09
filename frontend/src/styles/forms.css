@@ -126,7 +126,7 @@
 /* Added CSS for participant form */
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr; 
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
@@ -137,13 +137,13 @@
   
   .participant-item {
     display: grid;
-    grid-template-columns: 1fr 1fr auto auto;
+    grid-template-columns: 0.5fr 0.5fr 0.3fr 0.9fr 0.15fr;
     gap: 1rem;
     padding: 1rem;
   }
   
   .participant-email {
-    color: #666;
+    color: white;
     font-size: 0.875rem;
   }
   
@@ -155,7 +155,12 @@
     text-transform: capitalize;
     background-color: #e5e7eb;
   }
-  
+
+  .participant-availability {
+    color: white;
+    font-size: 0.875rem;
+  }
+
   .participant-ability.beginner { background-color: #dbeafe; color: #1e40af; }
   .participant-ability.intermediate { background-color: #dcfce7; color: #166534; }
   .participant-ability.advanced { background-color: #fef3c7; color: #92400e; }

@@ -188,6 +188,7 @@ const App = () => {
                     <span className={`participant-ability ${participant.skiingAbility}`}>
                       {participant.skiingAbility}
                     </span>
+                    <span className="participant-availability">{participant.availability}</span>
                     <button
                       onClick={() => deleteParticipant(participant._id, participant.name)}
                       className="delete-button"

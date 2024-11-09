@@ -53,6 +53,14 @@ const ParticipantForm = ({ onSubmit }) => {
           <option value="advanced">Advanced</option>
           <option value="expert">Expert</option>
         </select>
+        <input
+          type="text"
+          name="availability"
+          value={formData.availability}
+          onChange={handleChange}
+          placeholder="Availability"
+          className="input-field"
+        />
         <button type="submit" className="button">
           Add Participant
         </button>
