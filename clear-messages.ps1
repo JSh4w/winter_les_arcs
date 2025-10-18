@@ -19,7 +19,7 @@ $AdminKey = "winter-party-admin-2025"
 Write-Host "🗑️  Sending clear request..." -ForegroundColor Gray
 
 try {
-    $response = Invoke-RestMethod -Uri "$ApiUrl/messages/clear" `
+    $response = Invoke-RestMethod -Uri "$ApiUrl/dashboard_delete" `
         -Method Delete `
         -Headers @{ "x-admin-key" = $AdminKey } `
         -ErrorAction Stop

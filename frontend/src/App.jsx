@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import MessageForm from './components/MessageForm';
 import LiveBoard from './components/LiveBoard';
 import BoardScreen from './components/BoardScreen';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 const AppContent = () => {
@@ -22,6 +23,7 @@ const AppContent = () => {
         <Route path="/" element={<MessageForm />} />
         <Route path="/board" element={<LiveBoard />} />
         <Route path="/board_screen" element={<BoardScreen />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );

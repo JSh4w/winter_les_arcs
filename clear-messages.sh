@@ -18,7 +18,7 @@ ADMIN_KEY="winter-party-admin-2025"
 
 echo "🗑️  Sending clear request..."
 
-response=$(curl -s -X DELETE "$API_URL/messages/clear" \
+response=$(curl -s -X DELETE "$API_URL/dashboard_delete" \
   -H "x-admin-key: $ADMIN_KEY" \
   -w "\n%{http_code}")
 

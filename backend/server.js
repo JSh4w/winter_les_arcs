@@ -8,7 +8,7 @@ dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app', 'https://textwall.netlify.app'],
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'x-admin-key'],
     credentials: true
@@ -123,24 +123,24 @@ app.post('/messages', async (req, res) => {
 });
 
 // Clear all messages endpoint (admin only - protect with secret key)
-app.delete('/messages/clear', async (req, res) => {
+app.delete('/dashboard_delete', async (req, res) => {
     try {
         const adminKey = req.headers['x-admin-key'];
 
         // Check admin key
         if (adminKey !== process.env.ADMIN_KEY) {
-            return res.status(403).json({ error: 'Unauthorized' });
+            return res.status(403).json({ error: 'Unauthorized - Invalid admin key' });
         }
 
         if (isMongoConnected && mongoose.connection.readyState === 1) {
             // Clear MongoDB
-            await Message.deleteMany({});
-            res.json({ message: 'All messages cleared from database', count: 0 });
+            const result = await Message.deleteMany({});
+            res.json({ message: `Successfully cleared ${result.deletedCount} messages from database` });
         } else {
             // Clear in-memory storage
             const count = inMemoryMessages.length;
             inMemoryMessages = [];
-            res.json({ message: 'All messages cleared from memory', count });
+            res.json({ message: `Successfully cleared ${count} messages from memory` });
         }
     } catch (error) {
         console.error('Error clearing messages:', error);
