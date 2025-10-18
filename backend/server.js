@@ -134,16 +134,9 @@ app.post('/messages', async (req, res) => {
     }
 });
 
-// Clear all messages endpoint (admin only - protect with secret key)
+// Clear all messages endpoint (no authentication required)
 app.delete('/dashboard_delete', async (req, res) => {
     try {
-        const adminKey = req.headers['x-admin-key'];
-
-        // Check admin key
-        if (adminKey !== process.env.ADMIN_KEY) {
-            return res.status(403).json({ error: 'Unauthorized - Invalid admin key' });
-        }
-
         if (isMongoConnected && mongoose.connection.readyState === 1) {
             // Clear MongoDB
             const result = await Message.deleteMany({});

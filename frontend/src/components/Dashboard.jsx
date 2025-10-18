@@ -3,18 +3,12 @@ import axios from 'axios';
 
 const Dashboard = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [adminKey, setAdminKey] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClearMessages = async (e) => {
     e.preventDefault();
-
-    if (!adminKey) {
-      setError('Please enter admin key');
-      return;
-    }
 
     if (!window.confirm('Are you sure you want to delete ALL messages? This cannot be undone!')) {
       return;
@@ -25,20 +19,11 @@ const Dashboard = () => {
     setMessage('');
 
     try {
-      const response = await axios.delete(`${API_URL}/dashboard_delete`, {
-        headers: {
-          'x-admin-key': adminKey
-        }
-      });
+      const response = await axios.delete(`${API_URL}/dashboard_delete`);
 
       setMessage(response.data.message);
-      setAdminKey(''); // Clear the key for security
     } catch (err) {
-      if (err.response?.status === 403) {
-        setError('Invalid admin key');
-      } else {
-        setError('Failed to clear messages. Please try again.');
-      }
+      setError('Failed to clear messages. Please try again.');
       console.error('Error clearing messages:', err);
     } finally {
       setIsLoading(false);
@@ -55,19 +40,6 @@ const Dashboard = () => {
         <p className="warning-text">⚠️ This will permanently delete all messages from the board</p>
 
         <form onSubmit={handleClearMessages} className="dashboard-form">
-          <div className="form-group">
-            <label htmlFor="adminKey">Admin Key:</label>
-            <input
-              type="password"
-              id="adminKey"
-              value={adminKey}
-              onChange={(e) => setAdminKey(e.target.value)}
-              placeholder="Enter admin key"
-              disabled={isLoading}
-              required
-            />
-          </div>
-
           <button
             type="submit"
             className="delete-button"
