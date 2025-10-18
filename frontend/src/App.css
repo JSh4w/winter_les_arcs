@@ -1,84 +1,323 @@
-/* App.css */
-@import './styles/base.css';
-@import './styles/card.css';
-@import './styles/trip-details.css';
-@import './styles/forms.css';
-@import './styles/server_status.css';
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Rest of the CSS remains the same */
-.header {
-  text-align: center;
+body {
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  background: #0a0f0a;
+  color: #00ff00;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #0d1f0d;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+}
+
+.nav-link {
+  padding: 0.75rem 1.5rem;
+  background: #1a331a;
+  color: #33ff33;
+  text-decoration: none;
+  border: 1px solid #33ff33;
+  border-radius: 0;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-link:hover {
+  background: #33ff33;
+  color: #0a0f0a;
+  box-shadow: 0 0 10px #33ff33;
+}
+
+/* Message Form */
+.message-form-container {
+  background: #0d1f0d;
+  color: #33ff33;
+  padding: 2rem;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.2);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.message-form-container h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #66ff66;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  color: #99ff99;
   margin-bottom: 2rem;
 }
 
-.header h1 {
-  font-size: 1.875rem;
-  font-weight: bold;
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message-form textarea {
+  padding: 1rem;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+  font-size: 1rem;
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  resize: vertical;
+  transition: all 0.3s ease;
+  background: #0a1a0a;
+  color: #66ff66;
+}
+
+.message-form textarea:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-count {
+  color: #99ff99;
+  font-size: 0.875rem;
+}
+
+.submit-button {
+  padding: 0.75rem 2rem;
+  background: #1a331a;
+  color: #66ff66;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #33ff33;
+  color: #0a0f0a;
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.6);
+}
+
+.submit-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Live Board */
+.live-board-container {
+  background: #0d1f0d;
+  color: #66ff66;
+  padding: 2rem;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.2);
+  min-height: 70vh;
+  width: 95%;
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+/* Board Screen - Full screen mode without navigation */
+.live-board-container.board-screen {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #33ff33;
+  padding-bottom: 1rem;
+}
+
+.board-header h1 {
+  font-size: 2rem;
+  color: #66ff66;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.last-update {
+  color: #99ff99;
+  font-size: 0.875rem;
+}
+
+.refresh-button {
+  padding: 0.5rem 1rem;
+  background: #1a331a;
+  color: #66ff66;
+  border: 2px solid #33ff33;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+}
+
+.refresh-button:hover {
+  background: #33ff33;
+  color: #0a0f0a;
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.6);
+}
+
+.messages-board {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message-card {
+  background: #1a2e1a;
+  padding: 1.5rem;
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  animation: slideIn 0.5s ease;
+  position: relative;
   margin-bottom: 0.5rem;
 }
 
-.header p {
-  color: #666;
+.message-card:hover {
+  background: #1f3a1f;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.message-content {
+  font-size: 1.75rem;
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+  color: #66ff66;
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-weight: 400;
+}
+
+.message-time {
+  color: #99ff99;
+  font-size: 1rem;
+}
+
+.no-messages {
+  text-align: center;
+  color: #99ff99;
+  padding: 3rem;
+  font-size: 1.125rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.125rem;
+  color: #66ff66;
+}
+
+/* Error & Success Messages */
+.error-message,
+.success-message {
+  padding: 1rem;
+  border-radius: 0;
+  margin-top: 1rem;
+  position: relative;
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
 }
 
 .error-message {
-  background-color: #fee2e2;
-  border: 1px solid #f87171;
-  color: #b91c1c;
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  position: relative;
+  background: #331a1a;
+  color: #ff6666;
+  border: 2px solid #ff6666;
+  box-shadow: 0 0 10px rgba(255, 102, 102, 0.3);
+}
+
+.success-message {
+  background: #1a331a;
+  color: #66ff66;
+  border: 2px solid #33ff33;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
 }
 
 .error-message button {
   position: absolute;
   right: 1rem;
-  font-weight: bold;
+  top: 0.75rem;
   background: none;
   border: none;
+  font-size: 1.5rem;
+  color: inherit;
   cursor: pointer;
+  opacity: 0.7;
 }
 
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-  }
-  
-  .container {
-    background-color: #1a1a1a;
-  }
-  
-  .card {
-    background-color: #2d2d2d;
-  }
-  
-  .participant-item {
-    background-color: #333;
-  }
-  
-  .participant-item:hover {
-    background-color: #404040;
-  }
-  
-  .input-field,
-  .comment-form textarea {
-    background-color: #333;
-    border-color: #404040;
-    color: white;
-  }
-  
-  .error-message {
-    background-color: #7f1d1d;
-    border-color: #991b1b;
-    color: #fee2e2;
-  }
+.error-message button:hover {
+  opacity: 1;
 }
 
-/* If you want links to be styled differently */
-.trip-details a:hover {
-  text-decoration: underline;
+/* Responsive */
+@media (max-width: 768px) {
+  .app {
+    padding: 0.5rem;
+  }
+
+  .message-form-container,
+  .live-board-container {
+    padding: 1.5rem;
+  }
+
+  .board-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .nav {
+    flex-direction: column;
+  }
 }

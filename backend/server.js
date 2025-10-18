@@ -8,140 +8,147 @@ dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app'],
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'x-admin-key'],
     credentials: true
 }));
 
-// Debug middleware to log requests
-app.use((req, res, next) => {
-    console.log('\n--- Incoming Request ---');
-    console.log('Time:', new Date().toISOString());
-    console.log('Method:', req.method);
-    console.log('Path:', req.path);
-    console.log('Origin:', req.headers.origin);
-    console.log('---------------------\n');
-    next();
-});
-
 app.use(express.json());
 
-
-
-// Make a request to the health endpoint for render.com 
+// Health endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'healthy' });
 });
 
-// Root Route , this is to display if look directly at backend on render.com
+// Root Route
 app.get('/', (req, res) => {
     res.json({
-        message: 'Les Arcs Trip Planner API',
+        message: 'Party Message Board API',
         endpoints: {
             health: '/health',
-            participants: '/participants',
-            comments: '/comments'
+            messages: '/messages'
         }
     });
 });
 
-
-// FIXME remove after testing is done
-// Add this before your routes to log the IP
-app.use((req, res, next) => {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    console.log('Incoming request from IP:', ip);
-    next();
-});
+let isMongoConnected = false;
 
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => {
+        console.log('Connected to MongoDB');
+        isMongoConnected = true;
+    })
+    .catch(err => {
+        console.warn('MongoDB connection failed - running without persistence:', err.message);
+        isMongoConnected = false;
+    });
 
-const Participant = mongoose.model('Participant', {
-    name: String,
-    email: String,
-    skiingAbility: {
-        type: String,
-        enum: ['beginner', 'intermediate', 'advanced', 'expert'],
-        default: 'beginner'
-    },
-    availability: String,
-    createdAt: { type: Date, default: Date.now }
-});
-
-const Comment = mongoose.model('Comment', {
+// Message Model
+const Message = mongoose.model('Message', {
     content: String,
     createdAt: { type: Date, default: Date.now }
 });
 
-// Participants routes
-app.get('/participants', async (req, res) => {
-    try {
-        const participants = await Participant.find().sort({ createdAt: -1 });
-        res.json(participants);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching participants' });
-    }
-});
+// In-memory fallback storage
+let inMemoryMessages = [];
 
-app.post('/participants', async (req, res) => {
-    try {
-        const participant = new Participant(req.body);
-        await participant.save();
-        res.status(201).json(participant);
-    } catch (error) {
-        res.status(500).json({ error: 'Error adding participant' });
-    }
-});
+// Profanity filter
+const profanityList = [
+    'fuck', 'shit', 'ass', 'bitch', 'damn', 'hell', 'bastard', 'crap',
+    'dick', 'pussy', 'cock', 'piss', 'slut', 'whore', 'fag', 'retard',
+    'nigger', 'nigga', 'cunt', 'twat', 'wanker', 'bollocks'
+];
 
-app.delete('/participants/:id', async (req, res) => {
+function filterProfanity(text) {
+    let filtered = text;
+    profanityList.forEach(word => {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        filtered = filtered.replace(regex, (match) => {
+            return '*'.repeat(match.length);
+        });
+    });
+    return filtered;
+}
+
+// Messages routes
+app.get('/messages', async (req, res) => {
     try {
-        const result = await Participant.findByIdAndDelete(req.params.id);
-        if (!result) {
-            return res.status(404).json({ error: 'Participant not found' });
+        if (isMongoConnected && mongoose.connection.readyState === 1) {
+            const messages = await Message.find().sort({ createdAt: -1 });
+            res.json(messages);
+        } else {
+            // Return in-memory messages if DB is not available
+            res.json(inMemoryMessages);
         }
-        res.json({ message: 'Participant deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting participant' });
+        console.error('Error fetching messages:', error);
+        // Fallback to in-memory on error
+        res.json(inMemoryMessages);
     }
 });
 
-// Comments routes
-app.get('/comments', async (req, res) => {
+app.post('/messages', async (req, res) => {
     try {
-        const comments = await Comment.find().sort({ createdAt: -1 });
-        res.json(comments);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching comments' });
-    }
-});
+        // Filter profanity from the message content
+        const filteredContent = filterProfanity(req.body.content);
 
-app.post('/comments', async (req, res) => {
-    try {
-        const comment = new Comment(req.body);
-        await comment.save();
-        res.status(201).json(comment);
-    } catch (error) {
-        res.status(500).json({ error: 'Error adding comment' });
-    }
-});
+        const messageData = {
+            content: filteredContent,
+            createdAt: new Date()
+        };
 
-app.delete('/comments/:id', async (req, res) => {
-    try {
-        const result = await Comment.findByIdAndDelete(req.params.id);
-        if (!result) {
-            return res.status(404).json({ error: 'Comment not found' });
+        if (isMongoConnected && mongoose.connection.readyState === 1) {
+            // Save to MongoDB if connected
+            const message = new Message(messageData);
+            await message.save();
+            res.status(201).json(message);
+        } else {
+            // Save to in-memory storage if DB is not available
+            const message = {
+                _id: Date.now().toString(),
+                ...messageData
+            };
+            inMemoryMessages.unshift(message);
+            // Keep only last 100 messages in memory
+            if (inMemoryMessages.length > 100) {
+                inMemoryMessages = inMemoryMessages.slice(0, 100);
+            }
+            res.status(201).json(message);
         }
-        res.json({ message: 'Comment deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting comment' });
+        console.error('Error adding message:', error);
+        res.status(500).json({ error: 'Error adding message' });
+    }
+});
+
+// Clear all messages endpoint (admin only - protect with secret key)
+app.delete('/messages/clear', async (req, res) => {
+    try {
+        const adminKey = req.headers['x-admin-key'];
+
+        // Check admin key
+        if (adminKey !== process.env.ADMIN_KEY) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        if (isMongoConnected && mongoose.connection.readyState === 1) {
+            // Clear MongoDB
+            await Message.deleteMany({});
+            res.json({ message: 'All messages cleared from database', count: 0 });
+        } else {
+            // Clear in-memory storage
+            const count = inMemoryMessages.length;
+            inMemoryMessages = [];
+            res.json({ message: 'All messages cleared from memory', count });
+        }
+    } catch (error) {
+        console.error('Error clearing messages:', error);
+        res.status(500).json({ error: 'Error clearing messages' });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log('Allowed origins:', ['http://localhost:5173', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app']);
 });
