@@ -17,6 +17,11 @@ const BoardScreen = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setLoading(true);
+    fetchMessages();
+  };
+
   useEffect(() => {
     // Initial fetch
     fetchMessages();
@@ -40,6 +45,10 @@ const BoardScreen = () => {
 
   return (
     <div className="live-board-container board-screen">
+      <button onClick={handleRefresh} className="refresh-button screen-refresh">
+        ↻ Refresh
+      </button>
+
       <div className="messages-board">
         {messages.length === 0 ? (
           <p className="no-messages">No messages yet. Be the first to send one!</p>

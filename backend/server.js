@@ -53,6 +53,10 @@ const Message = mongoose.model('Message', {
 // In-memory fallback storage
 let inMemoryMessages = [];
 
+// DDoS protection - track total messages
+const MAX_MESSAGES = 3000;
+let totalMessagesCreated = 0;
+
 // Profanity filter
 const profanityList = [
     'fuck', 'shit', 'ass', 'bitch', 'damn', 'hell', 'bastard', 'crap',
@@ -90,6 +94,22 @@ app.get('/messages', async (req, res) => {
 
 app.post('/messages', async (req, res) => {
     try {
+        // DDoS protection - check if limit exceeded
+        if (totalMessagesCreated >= MAX_MESSAGES) {
+            console.error(`🚨 DDOS PROTECTION: Message limit of ${MAX_MESSAGES} exceeded. Shutting down server.`);
+            res.status(503).json({
+                error: 'Service temporarily unavailable - message limit exceeded',
+                message: 'The message board has been disabled due to excessive activity. Please contact the administrator.'
+            });
+
+            // Gracefully shut down the server
+            setTimeout(() => {
+                console.error('Server shutting down due to message limit exceeded...');
+                process.exit(1);
+            }, 1000);
+            return;
+        }
+
         // Filter profanity from the message content
         const filteredContent = filterProfanity(req.body.content);
 
@@ -102,6 +122,8 @@ app.post('/messages', async (req, res) => {
             // Save to MongoDB if connected
             const message = new Message(messageData);
             await message.save();
+            totalMessagesCreated++;
+            console.log(`Message ${totalMessagesCreated}/${MAX_MESSAGES} created`);
             res.status(201).json(message);
         } else {
             // Save to in-memory storage if DB is not available
@@ -110,6 +132,8 @@ app.post('/messages', async (req, res) => {
                 ...messageData
             };
             inMemoryMessages.unshift(message);
+            totalMessagesCreated++;
+            console.log(`Message ${totalMessagesCreated}/${MAX_MESSAGES} created (in-memory)`);
             // Keep only last 100 messages in memory
             if (inMemoryMessages.length > 100) {
                 inMemoryMessages = inMemoryMessages.slice(0, 100);
@@ -135,12 +159,18 @@ app.delete('/dashboard_delete', async (req, res) => {
         if (isMongoConnected && mongoose.connection.readyState === 1) {
             // Clear MongoDB
             const result = await Message.deleteMany({});
-            res.json({ message: `Successfully cleared ${result.deletedCount} messages from database` });
+            // Reset the counter
+            totalMessagesCreated = 0;
+            console.log('🔄 Messages cleared and counter reset to 0');
+            res.json({ message: `Successfully cleared ${result.deletedCount} messages from database. Counter reset.` });
         } else {
             // Clear in-memory storage
             const count = inMemoryMessages.length;
             inMemoryMessages = [];
-            res.json({ message: `Successfully cleared ${count} messages from memory` });
+            // Reset the counter
+            totalMessagesCreated = 0;
+            console.log('🔄 Messages cleared and counter reset to 0');
+            res.json({ message: `Successfully cleared ${count} messages from memory. Counter reset.` });
         }
     } catch (error) {
         console.error('Error clearing messages:', error);
