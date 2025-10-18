@@ -57,22 +57,10 @@ let inMemoryMessages = [];
 const MAX_MESSAGES = 3000;
 let totalMessagesCreated = 0;
 
-// Profanity filter
-const profanityList = [
-    'fuck', 'shit', 'ass', 'bitch', 'damn', 'hell', 'bastard', 'crap',
-    'dick', 'pussy', 'cock', 'piss', 'slut', 'whore', 'fag', 'retard',
-    'nigger', 'nigga', 'cunt', 'twat', 'wanker', 'bollocks'
-];
-
+// Profanity filter disabled
 function filterProfanity(text) {
-    let filtered = text;
-    profanityList.forEach(word => {
-        const regex = new RegExp(`\\b${word}\\b`, 'gi');
-        filtered = filtered.replace(regex, (match) => {
-            return '*'.repeat(match.length);
-        });
-    });
-    return filtered;
+    // No filtering - return text as-is
+    return text;
 }
 
 // Messages routes
