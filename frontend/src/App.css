@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
   background: #0a0f0a;
   color: #00ff00;
   min-height: 100vh;
@@ -84,7 +84,7 @@ body {
   border: 2px solid #33ff33;
   border-radius: 0;
   font-size: 1rem;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
   resize: vertical;
   transition: all 0.3s ease;
   background: #0a1a0a;
@@ -119,7 +119,7 @@ body {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -199,7 +199,7 @@ body {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
 }
 
 .refresh-button:hover {
@@ -245,7 +245,7 @@ body {
   line-height: 1.8;
   margin-bottom: 0.5rem;
   color: #66ff66;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
   font-weight: 400;
 }
 
@@ -275,7 +275,7 @@ body {
   border-radius: 0;
   margin-top: 1rem;
   position: relative;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
 }
 
 .error-message {
@@ -374,7 +374,7 @@ body {
   border: 2px solid #33ff33;
   border-radius: 0;
   color: #66ff66;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
   font-size: 1rem;
 }
 
@@ -395,7 +395,7 @@ body {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  font-family: inherit;
 }
 
 .delete-button:hover:not(:disabled) {
