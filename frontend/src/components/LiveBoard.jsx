@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import MessageCard from './MessageCard';
 
 const LiveBoard = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -71,14 +72,7 @@ const LiveBoard = () => {
         {messages.length === 0 ? (
           <p className="no-messages">No messages yet. Be the first to send one!</p>
         ) : (
-          messages.map((msg) => (
-            <div key={msg._id} className="message-card">
-              <p className="message-content">{msg.content}</p>
-              <span className="message-time">
-                {new Date(msg.createdAt).toLocaleString()}
-              </span>
-            </div>
-          ))
+          messages.map((msg) => <MessageCard key={msg._id} msg={msg} />)
         )}
       </div>
     </div>

@@ -59,6 +59,16 @@ const ANCHOR = [
   '.#####.',
 ];
 
+const IMAGE = [
+  '#########',
+  '#.......#',
+  '#.....#.#',
+  '#.......#',
+  '#..#....#',
+  '#.###.#.#',
+  '#########',
+];
+
 const icon = (rows) => {
   const Icon = ({ size = 18, className = 'pixel-icon', title }) => (
     <PixelArt rows={rows} size={size} className={className} title={title} />
@@ -71,3 +81,4 @@ export const BoardIcon = icon(BOARD);
 export const RefreshIcon = icon(REFRESH);
 export const SkullIcon = icon(SKULL);
 export const AnchorIcon = icon(ANCHOR);
+export const ImageIcon = icon(IMAGE);
