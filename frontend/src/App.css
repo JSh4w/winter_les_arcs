@@ -384,11 +384,33 @@ h2 {
   position: relative;
 }
 
-.screen-refresh {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+.screen-controls {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
   z-index: 100;
+  display: flex;
+  gap: 0.5rem;
+  transition: opacity 0.3s ease;
+}
+
+.screen-controls .refresh-button {
+  padding: 0.6rem 1rem;
+  background: rgba(34, 48, 42, 0.92);
+}
+
+/* In full screen the buttons fade out of the way; tap or hover to bring them back */
+.screen-controls.is-fullscreen {
+  opacity: 0.2;
+}
+
+.screen-controls.is-fullscreen:hover,
+.screen-controls.is-fullscreen:focus-within {
+  opacity: 1;
+}
+
+.board-screen .messages-board {
+  padding-top: 3.5rem;
 }
 
 .board-header {
@@ -611,9 +633,13 @@ h2 {
     padding: 1rem 1.1rem;
   }
 
-  .screen-refresh {
-    top: 0.75rem;
-    right: 0.75rem;
+  .screen-controls {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .screen-controls .control-label {
+    display: none;
   }
 
   .form-footer {
