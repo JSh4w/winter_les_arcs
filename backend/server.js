@@ -8,7 +8,7 @@ dotenv.config({path: './.env'});
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://winter-les-arcs.netlify.app', 'https://textwall.netlify.app'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://textwall.netlify.app'],
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'x-admin-key'],
     credentials: true
@@ -24,7 +24,7 @@ app.get('/health', (req, res) => {
 // Root Route
 app.get('/', (req, res) => {
     res.json({
-        message: 'Party Message Board API',
+        message: 'Textwall API',
         endpoints: {
             health: '/health',
             messages: '/messages'

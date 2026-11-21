@@ -14,7 +14,7 @@ if ($Environment -eq "production") {
     Write-Host "💻 Clearing messages from LOCAL..." -ForegroundColor Cyan
 }
 
-$AdminKey = "winter-party-admin-2025"
+$AdminKey = "textwall-admin"
 
 Write-Host "🗑️  Sending clear request..." -ForegroundColor Gray
 

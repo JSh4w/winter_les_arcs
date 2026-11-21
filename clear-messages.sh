@@ -14,7 +14,7 @@ else
     echo "💻 Clearing messages from LOCAL..."
 fi
 
-ADMIN_KEY="winter-party-admin-2025"
+ADMIN_KEY="textwall-admin"
 
 echo "🗑️  Sending clear request..."
 

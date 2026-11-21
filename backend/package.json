@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Winter Les Arcs Party Message Board Backend",
+  "description": "Textwall message board backend",
   "engines": {
     "node": ">=18.0.0"
   },
