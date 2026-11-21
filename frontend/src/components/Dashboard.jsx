@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { SkullIcon } from './icons';
 
 const Dashboard = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -37,7 +38,7 @@ const Dashboard = () => {
 
       <div className="dashboard-section">
         <h2>Clear All Messages</h2>
-        <p className="warning-text">⚠️ This will permanently delete all messages from the board</p>
+        <p className="warning-text"><SkullIcon size={16} /> This will permanently delete all messages from the board</p>
 
         <form onSubmit={handleClearMessages} className="dashboard-form">
           <button
@@ -45,7 +46,7 @@ const Dashboard = () => {
             className="delete-button"
             disabled={isLoading}
           >
-            {isLoading ? 'Clearing...' : '🗑️ Clear All Messages'}
+            {isLoading ? 'Clearing...' : <><SkullIcon /> Clear All Messages</>}
           </button>
         </form>
 

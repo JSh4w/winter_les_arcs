@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { AnchorIcon } from './icons';
 
 const MessageForm = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -72,7 +73,7 @@ const MessageForm = () => {
 
       {success && (
         <div className="success-message">
-          Message sent successfully!
+          <AnchorIcon size={16} /> Message sent successfully!
         </div>
       )}
     </div>

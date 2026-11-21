@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { RefreshIcon } from './icons';
 
 const BoardScreen = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -46,7 +47,7 @@ const BoardScreen = () => {
   return (
     <div className="live-board-container board-screen">
       <button onClick={handleRefresh} className="refresh-button screen-refresh">
-        ↻ Refresh
+        <RefreshIcon /> Refresh
       </button>
 
       <div className="messages-board">
