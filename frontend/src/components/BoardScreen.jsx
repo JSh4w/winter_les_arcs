@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import MessageCard from './MessageCard';
+import BoardQR from './BoardQR';
 import { RefreshIcon, FullscreenIcon, ExitFullscreenIcon } from './icons';
 
 // Fullscreen API with the webkit prefix older iPad Safari needs
@@ -124,6 +125,8 @@ const BoardScreen = () => {
           messages.map((msg) => <MessageCard key={msg._id} msg={msg} screen />)
         )}
       </div>
+
+      <BoardQR />
     </div>
   );
 };
