@@ -20,7 +20,7 @@ app.use(express.json());
 
 // Health endpoint
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'healthy' });
+    res.status(200).json({ status: 'healthy', database: dbReady() ? 'connected' : 'offline (in-memory fallback)' });
 });
 
 // Root Route
@@ -35,19 +35,24 @@ app.get('/', (req, res) => {
     });
 });
 
-let isMongoConnected = false;
+// Connect to MongoDB, retrying until it works. Until then the board runs on in-memory storage.
+// After the first connection, the driver reconnects automatically if the database blips.
+const RETRY_MS = 15 * 1000;
 
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log('Connected to MongoDB');
-        isMongoConnected = true;
-    })
-    .catch(err => {
-        console.warn('MongoDB connection failed - running without persistence:', err.message);
-        isMongoConnected = false;
-    });
+function connectToMongo() {
+    mongoose.connect(process.env.MONGODB_URI)
+        .then(() => console.log('Connected to MongoDB'))
+        .catch(err => {
+            console.warn(`MongoDB connection failed - running in-memory, retrying in ${RETRY_MS / 1000}s:`, err.message);
+            setTimeout(connectToMongo, RETRY_MS);
+        });
+}
+connectToMongo();
 
-const dbReady = () => isMongoConnected && mongoose.connection.readyState === 1;
+mongoose.connection.on('disconnected', () => console.warn('MongoDB disconnected - driver will try to reconnect'));
+mongoose.connection.on('reconnected', () => console.log('MongoDB reconnected'));
+
+const dbReady = () => mongoose.connection.readyState === 1;
 
 // Uploaded images/videos live in MongoDB GridFS (collections media.files + media.chunks)
 const mediaBucket = () => new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: 'media' });
